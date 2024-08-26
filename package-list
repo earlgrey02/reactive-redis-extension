@@ -1,0 +1,17 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:redis-core
+com.github.core
+com.github.core.annotation
+com.github.core.config
+com.github.core.util
+module:redis-coroutine
+com.github.coroutine.annotation
+com.github.coroutine.core
+com.github.coroutine.proxy
+com.github.coroutine.repository
+module:redis-reactor
+com.github.reactor.annotation
+com.github.reactor.core
+com.github.reactor.repository
