@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.spring.kotlin)
     alias(libs.plugins.java.library)
     alias(libs.plugins.java.fixture)
+    alias(libs.plugins.dokka)
 }
 
 java {
@@ -20,6 +21,17 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
+    configurations {
+        matching { it.name.startsWith("dokka") }
+            .configureEach {
+                resolutionStrategy.eachDependency {
+                    if (requested.group.startsWith("com.fasterxml.jackson")) {
+                        useVersion("2.15.3")
+                    }
+                }
+            }
+    }
 }
 
 subprojects {
@@ -30,6 +42,18 @@ subprojects {
         plugin(rootProject.libs.plugins.spring.kotlin)
         plugin(rootProject.libs.plugins.java.library)
         plugin(rootProject.libs.plugins.java.fixture)
+        plugin(rootProject.libs.plugins.dokka)
+    }
+
+    configurations {
+        matching { it.name.startsWith("dokka") }
+            .configureEach {
+                resolutionStrategy.eachDependency {
+                    if (requested.group.startsWith("com.fasterxml.jackson")) {
+                        useVersion("2.15.3")
+                    }
+                }
+            }
     }
 
     dependencies {
@@ -65,10 +89,26 @@ subprojects {
     }
 }
 
+tasks {
+    dokkaHtmlMultiModule {
+        moduleName.set("Reactive Redis Extension")
+    }
+}
+
 private fun ObjectConfigurationAction.plugin(provider: Provider<PluginDependency>): ObjectConfigurationAction =
     plugin(provider.get().pluginId)
 
 private fun DependencyHandler.test(dependencyNotation: Any) {
     testImplementation(dependencyNotation)
     testFixturesImplementation(dependencyNotation)
+}
+
+private fun initDokka() {
+    configurations.matching { it.name.startsWith("dokka") }.configureEach {
+        resolutionStrategy.eachDependency {
+            if (requested.group.startsWith("com.fasterxml.jackson")) {
+                useVersion("2.15.3")
+            }
+        }
+    }
 }
